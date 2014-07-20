@@ -25,7 +25,7 @@ namespace hpx { namespace threads { namespace executors { namespace detail
     // than time abs_time. This call never blocks, and may violate
     // bounds on the executor's queue size.
     void default_executor::add_at(
-        boost::posix_time::ptime const& abs_time,
+        boost::chrono::steady_clock::time_point const& abs_time,
         closure_type && f, char const* description,
         threads::thread_stacksize stacksize, error_code& ec)
     {
@@ -46,21 +46,12 @@ namespace hpx { namespace threads { namespace executors { namespace detail
     // than time rel_time from now. This call never blocks, and may
     // violate bounds on the executor's queue size.
     void default_executor::add_after(
-        boost::posix_time::time_duration const& rel_time,
+        boost::chrono::steady_clock::duration const& rel_time,
         closure_type && f, char const* description,
         threads::thread_stacksize stacksize, error_code& ec)
     {
-        // create new thread
-        thread_id_type id = register_thread_nullary(
-            std::move(f), description, suspended, false,
-            threads::thread_priority_normal, std::size_t(-1),
-            stacksize, ec);
-        if (ec) return;
-
-        HPX_ASSERT(invalid_thread_id != id);    // would throw otherwise
-
-        // now schedule new thread for execution
-        set_thread_state(id, rel_time);
+        return add_at(boost::chrono::steady_clock::now() + rel_time,
+            std::move(f), description, stacksize, ec);
     }
 
     // Return an estimate of the number of waiting tasks.

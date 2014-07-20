@@ -16,6 +16,7 @@
 
 #include <boost/format.hpp>
 #include <boost/cstdint.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/math/common_factor.hpp>
 #include <boost/thread/condition.hpp>
 #include <boost/thread/mutex.hpp>
@@ -544,4 +545,3 @@ int main(
     // Initialize and run HPX.
     return init(cmdline, argc, argv);
 }
-

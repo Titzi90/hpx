@@ -341,6 +341,8 @@ namespace detail
             if (state_ == empty) {
                 cond_.wait(l, "future_data::wait", ec);
                 if (ec) return;
+
+                HPX_ASSERT(state_ != empty);
             }
 
             if (&ec != &throws)
@@ -348,40 +350,22 @@ namespace detail
         }
 
         virtual BOOST_SCOPED_ENUM(future_status)
-        wait_for(boost::posix_time::time_duration const& p, error_code& ec = throws)
-        {
-            typename mutex_type::scoped_lock l(mtx_);
-
-            // block if this entry is empty
-            if (state_ == empty && p > boost::posix_time::seconds(0)) {
-                threads::thread_state_ex_enum const reason =
-                    cond_.wait_for(l, p, "future_data::wait_for", ec);
-                if (ec) return future_status::uninitialized;
-
-                return (reason == threads::wait_signaled) ?
-                    future_status::timeout : future_status::ready; //-V110
-            }
-
-            if (&ec != &throws)
-                ec = make_success_code();
-
-            return is_ready_locked() ?
-                future_status::ready : future_status::timeout; //-V110
-        }
-
-        virtual BOOST_SCOPED_ENUM(future_status)
-        wait_until(boost::posix_time::ptime const& at, error_code& ec = throws)
+        wait_until(boost::chrono::steady_clock::time_point const& abs_time,
+            error_code& ec = throws)
         {
             typename mutex_type::scoped_lock l(mtx_);
 
             // block if this entry is empty
             if (state_ == empty) {
                 threads::thread_state_ex_enum const reason =
-                    cond_.wait_until(l, at, "future_data::wait_until", ec);
+                    cond_.wait_until(l, abs_time, "future_data::wait_until", ec);
                 if (ec) return future_status::uninitialized;
 
-                return (reason == threads::wait_signaled) ?
-                    future_status::timeout : future_status::ready; //-V110
+                if (reason == threads::wait_signaled)
+                    return future_status::timeout;
+
+                HPX_ASSERT(state_ != empty);
+                return future_status::ready;
             }
 
             if (&ec != &throws)
@@ -439,26 +423,9 @@ namespace detail
         timed_future_data() {}
 
         template <typename Result_>
-        timed_future_data(boost::posix_time::ptime const& at,
-            Result_ && init)
-        {
-            at_time(at, std::forward<Result_>(init));
-        }
-
-        template <typename Result_>
-        timed_future_data(boost::posix_time::time_duration const& d,
-            Result_ && init)
-        {
-            at_time(d, std::forward<Result_>(init));
-        }
-
-        void set_data(result_type const& value)
-        {
-            this->base_type::set_result(value);
-        }
-
-        template <typename TimeSpec, typename Result_>
-        void at_time(TimeSpec const& tpoint, Result_ && init)
+        timed_future_data(
+            boost::chrono::steady_clock::time_point const& abs_time,
+            Result_&& init)
         {
             boost::intrusive_ptr<timed_future_data> this_(this);
 
@@ -475,12 +442,17 @@ namespace detail
             }
 
             // start new thread at given point in time
-            threads::set_thread_state(id, tpoint, threads::pending,
+            threads::set_thread_state(id, abs_time, threads::pending,
                 threads::wait_timeout, threads::thread_priority_critical, ec);
             if (ec) {
                 // thread scheduling failed, report error to the new future
                 this->base_type::set_exception(hpx::detail::access_exception(ec));
             }
+        }
+
+        void set_data(result_type const& value)
+        {
+            this->base_type::set_result(value);
         }
     };
 
@@ -535,21 +507,13 @@ namespace detail
         }
 
         virtual BOOST_SCOPED_ENUM(future_status)
-        wait_for(boost::posix_time::time_duration const& p, error_code& ec = throws)
+        wait_until(boost::chrono::steady_clock::time_point const& abs_time,
+            error_code& ec = throws)
         {
             if (!started_test())
                 return future_status::deferred; //-V110
             else
-                return this->future_data<Result>::wait_for(p, ec);
-        }
-
-        virtual BOOST_SCOPED_ENUM(future_status)
-        wait_until(boost::posix_time::ptime const& at, error_code& ec = throws)
-        {
-            if (!started_test())
-                return future_status::deferred; //-V110
-            else
-                return this->future_data<Result>::wait_until(at, ec);
+                return this->future_data<Result>::wait_until(abs_time, ec);
         };
 
     private:
