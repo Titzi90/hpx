@@ -31,11 +31,11 @@ namespace std{
 #include <boost/detail/workaround.hpp>
 
 #include <boost/archive/detail/basic_iarchive.hpp>
-#include "access.hpp"
-#include "nvp.hpp"
-#include "detail/stack_constructor.hpp"
-#include "collection_size_type.hpp"
-#include "item_version_type.hpp"
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/nvp.hpp>
+#include <boost/serialization/detail/stack_constructor.hpp>
+#include <boost/serialization/collection_size_type.hpp>
+#include <boost/serialization/item_version_type.hpp>
 
 namespace boost{
 namespace serialization {
