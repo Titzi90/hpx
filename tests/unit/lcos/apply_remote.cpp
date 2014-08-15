@@ -121,11 +121,15 @@ int hpx_main()
         hpx::apply<call_action>(inc, here, 1);
     }
 
+    std::cout << "about to wait" << std::endl;
+
     hpx::util::spinlock::scoped_lock l(result_mutex);
     result_cv.wait_for(result_mutex, boost::chrono::seconds(1),
         hpx::util::bind(std::equal_to<boost::int32_t>(), boost::ref(final_result), 13));
 
     HPX_TEST_EQ(final_result, 13);
+
+    std::cout << "done waiting" << std::endl;
 
     return hpx::finalize();
 }
