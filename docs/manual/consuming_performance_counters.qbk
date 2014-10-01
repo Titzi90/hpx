@@ -229,14 +229,14 @@ instance. This ensures, that at any point in time there is always not more
 than one active instance of any of the existing performance counters
 
 In order to access the counter value (or invoking any of the other
-functionality related to a performance counter, like `start`, `stop`, or
-`reset`) member functions of the created client component instance should be
-called:
+functionality related to a performance counter, like `start`, `start_sync`,
+`stop`, `stop_sync`, `reset` or `reset_sync`) member functions of the created
+client component instance should be called:
 
     // print the current number of threads created on locality 0
     hpx::performance_counters::performance_counter count(
         "/threads{locality#0/total}/count/cumulative");
-    hpx::cout << count.get_value<int>() << hpx::endl;
+    hpx::cout << count.get_valuei_sync<int>() << hpx::endl;
 
 For more information about the client component type see
 [classref hpx::performance_counters::performance_counter].
