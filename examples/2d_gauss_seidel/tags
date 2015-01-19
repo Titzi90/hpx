@@ -1,0 +1,27 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+SparseMatrix	matrix.hpp	/^class SparseMatrix$/;"	c
+SparseMatrix	sparse_matrix.hpp	/^    SparseMatrix(std::size_t const rows)$/;"	f	class:SparseMatrix
+SparseMatrix	sparse_matrix.hpp	/^class SparseMatrix$/;"	c
+diagonalValue	sparse_matrix.hpp	/^    std::vector< double & >                 diagonalValue;$/;"	m	class:SparseMatrix
+generateProblem	generate_problem.simple.cpp	/^SparseMatrix generateProblem(std::size_t const nx, std::size_t const ny,$/;"	f
+getDiagVal	sparse_matrix.hpp	/^    double getDiagVal  (std::size_t const row) const$/;"	f	class:SparseMatrix
+getIndices	sparse_matrix.hpp	/^    std::size_t getIndices  (std::size_t const row, std::size_t const index) const$/;"	f	class:SparseMatrix
+getIndices	sparse_matrix.hpp	/^    std::vector<std::size_t> & getIndices  (std::size_t const row)$/;"	f	class:SparseMatrix
+getIndices	sparse_matrix.hpp	/^    std::vector<std::size_t> const & getIndices  (std::size_t const row) const$/;"	f	class:SparseMatrix::std
+getNonZeros	sparse_matrix.hpp	/^    std::size_t getNonZeros (std::size_t const row) const$/;"	f	class:SparseMatrix
+getValue	sparse_matrix.hpp	/^    double getValue    (std::size_t const row, std::size_t const index) const$/;"	f	class:SparseMatrix
+getValue	sparse_matrix.hpp	/^    std::vector<double> & getValue    (std::size_t const row)$/;"	f	class:SparseMatrix
+getValue	sparse_matrix.hpp	/^    std::vector<double> const & getValue    (std::size_t const row) const$/;"	f	class:SparseMatrix::std
+indices	sparse_matrix.hpp	/^    std::vector< std::vector<std::size_t> > indices;$/;"	m	class:SparseMatrix
+initValus	generate_problem.simple.cpp	/^double initValus (std::size_t const x,  std::size_t const y,$/;"	f
+main	main.cpp	/^int hpx::main(boost::program_options::variables_map& vm)$/;"	f	class:hpx
+main	main.cpp	/^int main(int argc, const char *argv[])$/;"	f
+nonZeros	sparse_matrix.hpp	/^    std::vector< std::size_t >              nonZeros;$/;"	m	class:SparseMatrix
+solve	solver.hpp	/^solve(SparseMatrix const & matrix,$/;"	f
+steper	solver.gauss_seidel.cpp	/^steper(SparseMatrix const & matrix, hpx::vector<double> const & rhs,$/;"	f
+values	sparse_matrix.hpp	/^    std::vector< std::vector<double> >      values;$/;"	m	class:SparseMatrix
